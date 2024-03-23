@@ -1,23 +1,23 @@
 provider "aws" {
-    region = "us-east-2"
+  region = "us-east-2"
 }
 
 terraform {
   backend "s3" {
-    bucket = aws_s3_bucket.tarraform_state.id
-    key="global/s3/terraform.tfstate"
-    region = "us-east-2"  
-    encrypt = true
+    bucket         = aws_s3_bucket.tarraform_state.id
+    key            = "global/s3/terraform.tfstate"
+    region         = "us-east-2"
+    encrypt        = true
     dynamodb_table = aws_dynamodb_table.basic-dynamodb-table.name
-    }
+  }
 }
 
 resource "aws_s3_bucket" "tarraform_state" {
-    bucket = "terraform_state_bucket"
+  bucket = "terraform_state_bucket"
 
-    lifecycle {
-      prevent_destroy = true
-    }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
@@ -28,13 +28,13 @@ resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "s3-bucket-encryption" {
-    bucket = aws_s3_bucket.tarraform_state.id
+  bucket = aws_s3_bucket.tarraform_state.id
 
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
+  }
 }
 
 
@@ -48,9 +48,9 @@ resource "aws_s3_bucket_public_access_block" "example" {
 }
 
 resource "aws_dynamodb_table" "basic-dynamodb-table" {
-  name           = "terraform-backend-state"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "LockId"
+  name         = "terraform-backend-state"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockId"
 
   attribute {
     name = "LockId"
